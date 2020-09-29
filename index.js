@@ -18,7 +18,7 @@ exports.handler = async (event) => {
                 response.body = JSON.stringify(res);
                 resolve(response);
             } else {
-                response.body = err.message;
+                response.body = JSON.stringify(err);
                 response.statusCode = 400;
                 reject(response);
             }
@@ -37,9 +37,10 @@ exports.handler = async (event) => {
                     },
                     TableName: "yoga-pages"
                 }
-        
+                console.log(params);
                 dynamo.getItem(params, async (err, res) => {
                     const item = res.Item;
+                    console.log(res, item);
                     if (item){
                         resolve(item)
                     } else {
