@@ -43,10 +43,10 @@ exports.handler = async (event) => {
                             headline: item.headline.S,
                             content: item.content.S
                         }
-                        resolve(returnObject);
+                        done(null, returnObject);
                     } else {
                         console.log(`No page found with headline ${pageName}`);
-                        reject({});
+                        done({});
                     }
                 });
                 break;
