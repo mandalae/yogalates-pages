@@ -27,19 +27,25 @@ exports.handler = async (event) => {
         switch (event.httpMethod) {
             case 'GET':
                 console.log(event);
-                const pageName = event.queryStringParameters.pageName;
+                const pageName = event.pathParameters.pageName;
 
-                var params = {
+                const params = {
+                    Key: {
+                        "headline": {
+                            S: pageName
+                        }
+                    },
                     TableName: "yoga-pages"
-                };
-
-                docClient.scan(params, (err, data) => {
-                    let items = [];
-                    if (data.Items){
-                        items = data.Items;
+                }
+        
+                dynamo.getItem(params, async (err, res) => {
+                    const item = res.Item;
+                    if (item){
+                        resolve(item)
+                    } else {
+                        console.log(`No page found with headline ${pageName}`);
+                        reject({});
                     }
-                    console.log(err, items);
-                    done(null, items);
                 });
                 break;
             default:
