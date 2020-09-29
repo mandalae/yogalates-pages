@@ -30,7 +30,7 @@ exports.handler = async (event) => {
                 const pageName = event.queryStringParameters.pageName;
 
                 var params = {
-                    TableName: "yogalates-pages"
+                    TableName: "yoga-pages"
                 };
 
                 docClient.scan(params, (err, data) => {
