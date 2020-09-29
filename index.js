@@ -26,7 +26,6 @@ exports.handler = async (event) => {
 
         switch (event.httpMethod) {
             case 'GET':
-                console.log(event);
                 const pageName = event.pathParameters.pageName;
 
                 const params = {
@@ -37,12 +36,14 @@ exports.handler = async (event) => {
                     },
                     TableName: "yoga-pages"
                 }
-                console.log(params);
                 dynamo.getItem(params, async (err, res) => {
                     const item = res.Item;
-                    console.log(res, item);
                     if (item){
-                        resolve(item)
+                        const returnObject = {
+                            headline: item.headline.S,
+                            content: item.content.S
+                        }
+                        resolve(returnObject);
                     } else {
                         console.log(`No page found with headline ${pageName}`);
                         reject({});
