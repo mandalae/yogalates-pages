@@ -30,11 +30,11 @@ exports.handler = async (event) => {
 
                 const params = {
                     Key: {
-                        "headline": {
+                        "name": {
                             S: pageName
                         }
                     },
-                    TableName: "yoga-pages"
+                    TableName: "yogalates-pages"
                 }
                 dynamo.getItem(params, async (err, res) => {
                     const item = res.Item;
