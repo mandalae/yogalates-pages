@@ -1,6 +1,7 @@
 const aws = require('aws-sdk');
 
 const dynamo = new aws.DynamoDB();
+const docClient = new aws.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
     return new Promise(async (resolve, reject) => {
