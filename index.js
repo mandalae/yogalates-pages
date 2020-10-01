@@ -25,6 +25,8 @@ exports.handler = async (event) => {
             }
         }
 
+        const tableName = 'yogalates-pages';
+
         switch (event.httpMethod) {
             case 'GET':
                 if (event.pathParameters && event.pathParameters.pageName) {
@@ -36,7 +38,7 @@ exports.handler = async (event) => {
                                 S: pageName
                             }
                         },
-                        TableName: "yogalates-pages"
+                        TableName: tableName
                     }
                     dynamo.getItem(params, async (err, res) => {
                         const item = res.Item;
@@ -53,7 +55,7 @@ exports.handler = async (event) => {
                     });
                 } else {
                     const params = {
-                        TableName: "yogalates-pages"
+                        TableName: tableName
                     }
                     docClient.scan(params, (err, data) => {
                         let items = [];
@@ -63,6 +65,30 @@ exports.handler = async (event) => {
                         done(null, items);
                     });
                 }
+                break;
+            case 'POST':
+                const pageObject = JSON.parse(event.body);
+
+                const params = {
+                    TableName:tableName,
+                    Item:{
+                        'name': pageObject.name,
+                        'headline': pageObject.headline,
+                        'content': pageObject.content
+                    }
+                };
+                console.log(params);
+                console.log("Creating new page...");
+                docClient.put(params, (err, data) => {
+                    if (err) {
+                        console.log("ERR: ", err);
+                        done('Unable to create item. Error JSON: ' + JSON.stringify(err));
+                    } else {
+                        console.log("PutItem succeeded:", JSON.stringify(data, null, 2));
+                        done(null, {success: true});
+                    }
+                });
+
                 break;
             default:
                 done(new Error(`Unsupported method "${event.httpMethod}"`));
