@@ -26,9 +26,9 @@ exports.handler = async (event) => {
 
         switch (event.httpMethod) {
             case 'GET':
-                const pageName = event.pathParameters.pageName;
+                if (event.pathParameters && event.pathParameters.pageName) {
+                    const pageName = event.pathParameters.pageName;
 
-                if (pageName) {
                     const params = {
                         Key: {
                             "name": {
