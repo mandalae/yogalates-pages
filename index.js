@@ -28,27 +28,40 @@ exports.handler = async (event) => {
             case 'GET':
                 const pageName = event.pathParameters.pageName;
 
-                const params = {
-                    Key: {
-                        "name": {
-                            S: pageName
-                        }
-                    },
-                    TableName: "yogalates-pages"
-                }
-                dynamo.getItem(params, async (err, res) => {
-                    const item = res.Item;
-                    if (item){
-                        const returnObject = {
-                            headline: item.headline.S,
-                            content: item.content.S
-                        }
-                        done(null, returnObject);
-                    } else {
-                        console.log(`No page found with headline ${pageName}`);
-                        done({});
+                if (pageName) {
+                    const params = {
+                        Key: {
+                            "name": {
+                                S: pageName
+                            }
+                        },
+                        TableName: "yogalates-pages"
                     }
-                });
+                    dynamo.getItem(params, async (err, res) => {
+                        const item = res.Item;
+                        if (item){
+                            const returnObject = {
+                                headline: item.headline.S,
+                                content: item.content.S
+                            }
+                            done(null, returnObject);
+                        } else {
+                            console.log(`No page found with headline ${pageName}`);
+                            done({});
+                        }
+                    });
+                } else {
+                    const params = {
+                        TableName: "yogalates-pages"
+                    }
+                    docClient.scan(params, (err, data) => {
+                        let items = [];
+                        if (data.Items){
+                            items = data.Items;
+                        }
+                        done(null, items);
+                    });
+                }
                 break;
             default:
                 done(new Error(`Unsupported method "${event.httpMethod}"`));
