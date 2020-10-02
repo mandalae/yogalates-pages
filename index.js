@@ -44,6 +44,7 @@ exports.handler = async (event) => {
                         const item = res.Item;
                         if (item){
                             const returnObject = {
+                                name: item.name.S,
                                 headline: item.headline.S,
                                 content: item.content.S
                             }
