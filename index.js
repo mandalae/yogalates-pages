@@ -81,9 +81,10 @@ exports.handler = async (event) => {
                 }
                 break;
             case 'POST':
+                console.log(event);
                 const pageObject = JSON.parse(event.body);
                 console.log(pageObject);
-                
+
                 const params = {
                     TableName:tableName,
                     Item:{
