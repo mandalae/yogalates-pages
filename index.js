@@ -94,7 +94,7 @@ exports.handler = async (event) => {
                     }
                 };
 
-                docClient.put(params, (err, data) => {
+                docClient.put(params, async (err, data) => {
                     if (err) {
                         console.log("ERR: ", err);
                         done('Unable to create item. Error JSON: ' + JSON.stringify(err));
