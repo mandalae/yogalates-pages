@@ -10,9 +10,11 @@ const clearCache = stageName => {
       restApiId: 'ul55ggh6oa',
       stageName: stageName /* required */
     };
-    apigateway.flushStageCache(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);           // successful response
+    return new Promise((resolve, reject) => {
+        apigateway.flushStageCache(params, function(err, data) {
+          if (err) reject(err); // an error occurred
+          else     resolve(data);           // successful response
+        });
     });
 }
 
@@ -81,9 +83,7 @@ exports.handler = async (event) => {
                 }
                 break;
             case 'POST':
-                console.log(event);
                 const pageObject = JSON.parse(event.body);
-                console.log(pageObject);
 
                 const params = {
                     TableName:tableName,
@@ -93,19 +93,18 @@ exports.handler = async (event) => {
                         'content': pageObject.content
                     }
                 };
-                console.log(params);
-                console.log("Creating new page...");
+
                 docClient.put(params, (err, data) => {
                     if (err) {
                         console.log("ERR: ", err);
                         done('Unable to create item. Error JSON: ' + JSON.stringify(err));
                     } else {
                         console.log("PutItem succeeded:", JSON.stringify(data, null, 2));
-                        clearCache('Prod');
+                        const clearCacheResult = await clearCache('Prod');
+                        console.log(clearCacheResult);
                         done(null, {success: true});
                     }
                 });
-
                 break;
             default:
                 done(new Error(`Unsupported method "${event.httpMethod}"`));
