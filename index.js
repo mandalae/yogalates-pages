@@ -90,7 +90,8 @@ exports.handler = async (event) => {
                     Item:{
                         'name': pageObject.name,
                         'headline': pageObject.headline,
-                        'content': pageObject.content
+                        'content': pageObject.content,
+                        'type': pageObject.type
                     }
                 };
 
